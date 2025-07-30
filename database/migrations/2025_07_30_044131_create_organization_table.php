@@ -118,6 +118,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('organization');
+        Schema::dropIfExists('payments');
+        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('pgdb_products');
+        Schema::dropIfExists('billing_accounts');
+        Schema::dropIfExists('organization_user');
+        Schema::dropIfExists('organizations');
     }
 };
