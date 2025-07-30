@@ -116,8 +116,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('payments');
         Schema::dropIfExists('invoices');
         Schema::dropIfExists('pgdb_products');
