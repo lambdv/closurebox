@@ -110,13 +110,21 @@ return new class extends Migration
                 ->default('confirmed');
             $table->timestamps();
         });
-        
+
+        Schema::create('product_requests', function (Blueprint $table) {
+            $table->id();
+            $table->enum('type', ['ec2', 'pgdb']);
+            $table->enum('status', ['pending', 'accepted', 'declined'])
+                -> default('pending');
+            $table->timestamps();
+        });
     }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void {
+        Schema::dropIfExists('product_requests');
         Schema::dropIfExists('payments');
         Schema::dropIfExists('invoices');
         Schema::dropIfExists('pgdb_products');
