@@ -4,6 +4,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Services\AWS\EC2Service;
 use App\Job\Middleware\IsAuthorized;
+use Illuminate\Cache\RateLimiting\RateLimited;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 /**
  * Job that handles the request to create a new Ec2 Product for an org
@@ -12,7 +14,11 @@ class ProcessCreateProduct implements ShouldQueue{
     use Queueable;
     
     public function middleware() {
-        return [new IsAuthorized];
+        return [
+            new IsAuthorized,
+            // new RateLimited('create-product'),
+            // new WithoutOverlapping($this->orginization->id),
+        ];
     }
 
     public function __construct(public EC2Service $service,){}

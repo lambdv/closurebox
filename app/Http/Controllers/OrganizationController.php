@@ -3,10 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
+use App\Models\OrganizationMember;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class OrganizationController extends Controller
 {
+    /**
+     * Get user organizations using deferred props
+     */
+    public function getUserOrganizations(Request $request)
+    {
+        $user = $request->user();
+        
+        if (!$user) {
+            return response()->json([]);
+        }
+
+        $organizations = $user->organizations()
+            ->select('organizations.id', 'organizations.name')
+            ->get();
+
+        return response()->json($organizations);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -56,7 +76,7 @@ class OrganizationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource in storage.
      */
     public function destroy(Organization $organization)
     {

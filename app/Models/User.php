@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the organizations that the user is a member of.
+     */
+    public function organizations()
+    {
+        return $this->belongsToMany(Organization::class, 'organization_members')
+                    ->withPivot('role')
+                    ->withTimestamps();
+    }
 }

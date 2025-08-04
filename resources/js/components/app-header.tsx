@@ -1,17 +1,19 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icon } from '@/components/icon';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/cn/avatar';
+import { Button } from '@/components/cn/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/cn/dropdown-menu';
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/cn/navigation-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/cn/select';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/cn/sheet';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/cn/tooltip';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
+import { type BreadcrumbItem, type NavItem, type SharedData, type Organization } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
+import { BookOpen, Database, Folder, LayoutGrid, Menu, Search, Server, Store } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -21,19 +23,35 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard',
         icon: LayoutGrid,
     },
+    {
+        title: 'Servers',
+        href: '/servers',
+        icon: Server,
+    },
+
+    // {
+    //     title: 'Databases',
+    //     href: '/databases',
+    //     icon: Database,
+    // },
+    // {
+    //     title: 'Storage',
+    //     href: '/storage',
+    //     icon: Store,
+    // },
 ];
 
 const rightNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
+    // {
+    //     title: 'Repository',
+    //     href: 'https://github.com/laravel/react-starter-kit',
+    //     icon: Folder,
+    // },
+    // {
+    //     title: 'Documentation',
+    //     href: 'https://laravel.com/docs/starter-kits#react',
+    //     icon: BookOpen,
+    // },
 ];
 
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
@@ -44,8 +62,24 @@ interface AppHeaderProps {
 
 export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
-    const { auth } = page.props;
+    const { auth, organizations  } = page.props;
     const getInitials = useInitials();
+    const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
+
+    useEffect(() => {
+        // Set the first organization as default if available
+        if (organizations.length > 0 && !selectedOrganization) {
+            setSelectedOrganization(organizations[0]);
+        }
+    }, [organizations, selectedOrganization]);
+
+    const handleOrganizationChange = (organizationId: string) => {
+        const org = organizations.find(o => o.id.toString() === organizationId);
+        if (org) {
+            setSelectedOrganization(org);
+        }
+    };
+
     return (
         <>
             <div className="border-b border-sidebar-border/80">
@@ -97,6 +131,29 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     <Link href="/dashboard" prefetch className="flex items-center space-x-2">
                         <AppLogo />
                     </Link>
+
+                    {/* Organization Selector */}
+                    {organizations.length > 0 && (
+                        <div className="ml-6">
+                            <Select 
+                                value={selectedOrganization?.id?.toString() || ''} 
+                                onValueChange={handleOrganizationChange}
+                            >
+                                <SelectTrigger className="w-[200px]">
+                                    <SelectValue placeholder="Select Organization">
+                                        {selectedOrganization?.name || 'Select Organization'}
+                                    </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {organizations.map((org) => (
+                                        <SelectItem key={org.id} value={org.id.toString()}>
+                                            {org.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    )}
 
                     {/* Desktop Navigation */}
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">

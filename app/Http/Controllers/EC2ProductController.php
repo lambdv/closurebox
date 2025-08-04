@@ -1,65 +1,39 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\EC2Product;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Jobs\ProcessCreateProduct;
+use App\Services\EC2Service;
 
 class EC2ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+
+    public function viewServers(){
+        $ec2Products = EC2Product::all();
+        return Inertia::render('dashboard/servers/page', [
+            'servers' => $ec2Products,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    public function createServer(Request $request, EC2Service $ec2Service){
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        // ]);
+        try{
+            // $ec2Service->new([
+            //     'name' => $request->name,
+            // ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+            return redirect()
+                ->route('servers')
+                ->with('success', 'Server created successfully');
+        }
+        catch(\Exception $e){
+            return redirect()
+                ->route('servers')
+                ->withErrors(['errors' => 'Failed to create server: ' . $e->getMessage()]);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(EC2Product $eC2Product)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(EC2Product $eC2Product)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, EC2Product $eC2Product)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(EC2Product $eC2Product)
-    {
-        //
     }
 }

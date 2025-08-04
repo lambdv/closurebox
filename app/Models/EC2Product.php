@@ -9,4 +9,6 @@ class EC2Product extends Model
 {
     /** @use HasFactory<\Database\Factories\EC2ProductFactory> */
     use HasFactory;
+    protected $table = 'ec2_products';
+    protected $fillable = ['name', 'status'];
 }
