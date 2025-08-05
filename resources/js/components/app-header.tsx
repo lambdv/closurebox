@@ -64,21 +64,21 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
     const { auth, organizations  } = page.props;
     const getInitials = useInitials();
-    const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
+    // const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null);
 
-    useEffect(() => {
-        // Set the first organization as default if available
-        if (organizations.length > 0 && !selectedOrganization) {
-            setSelectedOrganization(organizations[0]);
-        }
-    }, [organizations, selectedOrganization]);
+    // useEffect(() => {
+    //     // Set the first organization as default if available
+    //     if (organizations.length > 0 && !selectedOrganization) {
+    //         setSelectedOrganization(organizations[0]);
+    //     }
+    // }, [organizations, selectedOrganization]);
 
-    const handleOrganizationChange = (organizationId: string) => {
-        const org = organizations.find(o => o.id.toString() === organizationId);
-        if (org) {
-            setSelectedOrganization(org);
-        }
-    };
+    // const handleOrganizationChange = (organizationId: string) => {
+    //     const org = organizations.find(o => o.id.toString() === organizationId);
+    //     if (org) {
+    //         setSelectedOrganization(org);
+    //     }
+    // };
 
     return (
         <>
@@ -133,7 +133,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     </Link>
 
                     {/* Organization Selector */}
-                    {organizations.length > 0 && (
+                    {/* {organizations.length > 0 && (
                         <div className="ml-6">
                             <Select 
                                 value={selectedOrganization?.id?.toString() || ''} 
@@ -153,7 +153,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 </SelectContent>
                             </Select>
                         </div>
-                    )}
+                    )} */}
 
                     {/* Desktop Navigation */}
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">

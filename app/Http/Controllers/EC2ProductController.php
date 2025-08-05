@@ -6,9 +6,11 @@ use Inertia\Inertia;
 use App\Jobs\ProcessCreateProduct;
 use App\Services\EC2Service;
 
-class EC2ProductController extends Controller
-{
+class EC2ProductController extends Controller {
 
+    /**
+     * view all serverd for a user
+     */
     public function viewServers(){
         $ec2Products = EC2Product::all();
         return Inertia::render('dashboard/servers/page', [
@@ -16,14 +18,20 @@ class EC2ProductController extends Controller
         ]);
     }
 
-    public function createServer(Request $request, EC2Service $ec2Service){
+    /**
+     * endpoint to create a new server
+     */
+    public function createServer(
+        Request $request, 
+        //EC2Service $ec2Service
+    ){
         // $request->validate([
         //     'name' => 'required|string|max:255',
         // ]);
         try{
-            // $ec2Service->new([
-            //     'name' => $request->name,
-            // ]);
+
+            //call dispatch job
+            ProcessCreateProduct::dispatch() -> onQueue('products');
 
             return redirect()
                 ->route('servers')

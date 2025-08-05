@@ -113,6 +113,10 @@ return new class extends Migration
 
         Schema::create('product_requests', function (Blueprint $table) {
             $table->id();
+            // $table->foreignId('organization_id')
+            //     ->constrained('organizations')
+            //     ->onDelete('restrict'); 
+
             $table->enum('type', ['ec2', 'pgdb']);
             $table->enum('status', ['pending', 'accepted', 'declined'])
                 -> default('pending');

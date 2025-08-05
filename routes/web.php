@@ -11,12 +11,12 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
 
-        Inertia::share([
-            'organizations' => fn () => 
-                request()->user()->organizations()
-                ->select('organizations.id', 'organizations.name')
-                ->get()
-        ]);
+        // Inertia::share([
+        //     'organizations' => fn () => 
+        //         request()->user()->organizations()
+        //             ->select('organizations.id', 'organizations.name')
+        //             ->get()
+        // ]);
  
 
     

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => env('MAIL_MAILER', 'failover'),
 
     /*
     |--------------------------------------------------------------------------
@@ -85,6 +85,7 @@ return [
                 'smtp',
                 'log',
             ],
+            //'retry_after' => 60,
         ],
 
         'roundrobin' => [
