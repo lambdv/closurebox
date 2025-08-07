@@ -24,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
         // RateLimiter::for('create-product', function ($job) {
         //     return Limit::perMinute(1)->by($job->orginization->id);
         // });
+        //Model::preventLazyLoading();
     }
 }
