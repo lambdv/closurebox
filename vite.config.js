@@ -8,7 +8,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx'],
+            input: ['resources/css/app.css', 'resources/inertia/app.tsx'],
             refresh: true,
         }),
         react(),
@@ -19,7 +19,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': '/resources/js',
+            '@': '/resources/inertia',
         },
     },
 });

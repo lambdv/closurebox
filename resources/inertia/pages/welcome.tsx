@@ -2,7 +2,7 @@ import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function Welcome() {
-    const { auth, organizations } = usePage<SharedData>().props;
+    const { auth } = usePage<SharedData>().props;
     
     // Add defensive programming to handle undefined auth
     const user = auth?.user || null;
@@ -25,18 +25,18 @@ export default function Welcome() {
                             </Link>
                         ) : (
                             <>
-                                <Link
+                                <a
                                     href={route('login')}
                                     className="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                                 >
                                     Log in
-                                </Link>
-                                <Link
+                                </a>
+                                <a
                                     href={route('register')}
                                     className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                                 >
                                     Register
-                                </Link>
+                                </a>
                             </>
                         )}
                     </nav>
@@ -49,29 +49,28 @@ export default function Welcome() {
                             <div className="mb-10"></div>
                             <ul className="flex gap-3 text-sm leading-normal">
                                 <li>
-                                    {JSON.stringify(organizations)}
                                     {user ? (
-                                        <Link
+                                        <a
                                             href={route('dashboard')}
                                             className="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white"
                                         >
                                             Dashboard
-                                        </Link>
+                                        </a>
                                     ) : (
                                         <>
-                                            <Link
+                                            <a
                                                 href={route('login')}
                                                 className="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white mr-2"
                                             >
                                                 Login
-                                            </Link>
+                                            </a>
 
-                                            <Link
+                                            <a
                                                 href={route('register')}
                                                 className="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white"
                                             >
                                                 Register
-                                            </Link>
+                                            </a>
                                         </>
                                     )}
                                 </li>
