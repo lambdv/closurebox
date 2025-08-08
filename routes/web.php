@@ -15,6 +15,18 @@ Volt::route('/servers', 'pages.servers')
     ->middleware(['auth', 'verified'])
     ->name('servers');
 
+Volt::route('/test', 'pages.test')
+    ->middleware(['auth', 'verified'])
+    ->name('test');
+
+
+
+// Route::get('/greeting', function () {
+//     $user = Auth()->user();
+//     return new App\Mail\Greeting($user);
+// })    ->middleware(['auth', 'verified']);
+
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
