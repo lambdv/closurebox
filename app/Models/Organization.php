@@ -24,7 +24,7 @@ class Organization extends Model{
     }
 
     public function ec2Products(): HasMany{
-        return $this->hasMany(Ec2Product::class);
+        return $this->hasMany(EC2Product::class);
     }
 
     public function invoices(): HasMany{

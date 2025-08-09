@@ -45,10 +45,10 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Mail::to($user)
-            // ->cc($moreUsers)
-            // ->bcc($evenMoreUsers)
-            ->queue(new Greeting($user));
+        // Mail::to($user)
+        //     // ->cc($moreUsers)
+        //     // ->bcc($evenMoreUsers)
+        //     ->queue(new Greeting($user));
 
         Auth::login($user);
 

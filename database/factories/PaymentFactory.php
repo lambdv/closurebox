@@ -1,7 +1,6 @@
 <?php
-
 namespace Database\Factories;
-
+use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +15,11 @@ class PaymentFactory extends Factory
      */
     public function definition(): array
     {
+        $invoice = Invoice::inRandomOrder()->first();
         return [
-            //
+            'invoice_id' => $invoice->id,
+            'amount' => $invoice->amount,
+            'status' => fake()->randomElement(['confirmed', 'refunded', 'cancelled']),
         ];
     }
 }
