@@ -6,6 +6,7 @@ use Aws\Ec2\Ec2Client;
 use Aws\Ec2\Ec2Exception;
 use Illuminate\Support\Facades\Log;
 use Aws\Result;
+use Aws\Exception\AwsException;
 
 // interface VenderVPSService {
 //     public function spawn(array $params): array;
@@ -56,8 +57,8 @@ class EC2Service  {
                 ],
             ];
 
-            //only run in production mode
-            if(env('INFRA_MODE') == true && env('APP_ENV') == 'production'){ 
+            //only run in infrastructure mode (robust boolean parsing)
+            if(\filter_var(env('INFRA_MODE', false), FILTER_VALIDATE_BOOLEAN) === true){ 
                 $result = $this->ec2Client->runInstances($awsParams);
             }
             else {
@@ -77,17 +78,24 @@ class EC2Service  {
         /**
      * action that spawns an ec2 instance atomically
      */
-    public function terminate(
-        array $instanceIds
-    ){
+    public function terminate(array $instanceIds)
+    {
         try {
-            $this->ec2Client->terminateInstances(['InstanceIds' => $instanceIds]);
-        }
-        catch(\Exception $e){
-            echo "There was a problem terminating the instances: {$e->getMessage()}\n";
-            Log::error("There was a problem terminating the instances: {$e->getMessage()}\n");
+            $result = $this->ec2Client->terminateInstances([
+                'InstanceIds' => $instanceIds
+            ]);
+            return $result; // optional
+        } catch (\Exception $e) {
+            $message = "There was a problem terminating the instances: {$e->getMessage()}";
+            echo $message . "\n";
+            Log::error($message);
             throw $e;
         }
+    }
+
+
+    public function describeInstances(){
+        return $this->ec2Client->describeInstances();
     }
 }
 
@@ -161,17 +169,11 @@ function fakeRunInstancesResult(int $count = 1): Result
             ],
             'PrivateIpAddress' => '192.168.' . rand(0, 255) . '.' . rand(1, 254),
             'PublicIpAddress'  => '54.' . rand(0, 255) . '.' . rand(0, 255) . '.' . rand(1, 254),
-            // You can add more fields as needed to match AWS response
         ];
     }
 
+    // Align with AWS runInstances response: top-level 'Instances'
     return new Result([
-        'Reservations' => [
-            [
-                'OwnerId'       => '123456789012',
-                'ReservationId' => 'r-' . bin2hex(random_bytes(8)),
-                'Instances'     => $instances
-            ]
-        ]
+        'Instances' => $instances,
     ]);
 }

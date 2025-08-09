@@ -14,35 +14,36 @@ use App\Jobs\Middleware\IsAuthorized;
 /**
  * Job that handles the request to create a new Ec2 Product for an org
  */
-class ProcessCreateProduct implements ShouldQueue{
+class CreateEc2Product implements ShouldQueue{
     use Queueable;
 
-    public function __construct(public int $request_id, public int $organization_id)
-    {
-    }
+    public $aws_result;
+    public ?string $instanceId = null;
+
+    public function __construct(
+        public array $params,
+        public int $request_id, //TODO: request should have an assoiated org and user id 
+        public int $organization_id
+    ){}
 
     public function handle(): void{
-        Log::info("creating new ec2 product...");
-
-        // //insert product_request
-        // $this->req->status = 'pending';
-        // $this->req->save();
-
-        // //critical section
+        Log::info("Creating new EC2 Product...");
 
         try{
-            $Ec2Service = new EC2Service();
-            $res = $Ec2Service->new([
-                'name' => 'Server-' . $this->request_id,
-            ]);
+            $res = new EC2Service()->new($this->params);
+            $this->aws_result = $res;
         }
         catch(\Exception $e){
             $this->fail($e);
             return;
         }
 
-        // Extract instance ID from the AWS Result object
-        $instanceId = $res['Reservations'][0]['Instances'][0]['InstanceId'];
+        // Extract instance ID from the AWS Result object (support both real and mock shapes)
+        $instanceId = $res['Instances'][0]['InstanceId'] ?? ($res['Reservations'][0]['Instances'][0]['InstanceId'] ?? null);
+        if ($instanceId === null) {
+            throw new \RuntimeException('InstanceId missing from AWS response');
+        }
+        $this->instanceId = $instanceId;
         Log::info("ec2 product successfully created: " . $instanceId);
 
         // add EC2 product details to db
@@ -62,15 +63,24 @@ class ProcessCreateProduct implements ShouldQueue{
     }
 
     public function failed(?\Throwable $exception): void {
+        //update product_request to fail
         ProductRequest::find($this->request_id)
             ->update([
                 'status' => 'declined',
             ]);
 
-        //update product_request to fail
         //log fail
-        //make sure instance is deleted
+        Log::error("Failed to create EC2 Product: " . $exception->getMessage());
+        //make sure instance is deleted if we have an instance id
+        if (!empty($this->instanceId)) {
+            try {
+                (new EC2Service())->terminate([$this->instanceId]);
+            } catch (\Throwable $t) {
+                Log::error('Failed to terminate instance during job failure cleanup: ' . $t->getMessage());
+            }
+        }
         // Send user notification of failure
+        //TODO: send user notification of failure
     }
     
     public function middleware() {

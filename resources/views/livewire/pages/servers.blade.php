@@ -1,7 +1,7 @@
 <?php
 use Livewire\Volt\Component;
 use Livewire\Attributes\{Layout, Title};
-use App\Jobs\ProcessCreateProduct;
+use App\Jobs\CreateEc2Product;
 use App\Models\ProductRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\TestJob;
@@ -26,9 +26,14 @@ class extends Component {
             'organization_id' => $org->id,
         ]); //optimistically create the request
 
-        // // Run synchronously so the server appears immediately in the table
-        // (new ProcessCreateProduct($req->id, $org->id))->handle();
-        ProcessCreateProduct::dispatch($req->id, $org->id);
+
+        CreateEc2Product::dispatch(
+            $params = [
+                'name' => $this->name,
+            ],
+            $req->id, 
+            $org->id
+        );
 
         $this->redirectRoute('servers');
         session()->flash('success', "Server created successfully!");
