@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Mail\Greeting;
 
 class RegisteredUserController extends Controller
 {
@@ -44,7 +45,13 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        // Mail::to($user)
+        //     // ->cc($moreUsers)
+        //     // ->bcc($evenMoreUsers)
+        //     ->queue(new Greeting($user));
+
         Auth::login($user);
+
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

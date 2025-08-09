@@ -1,7 +1,7 @@
 <?php
-
 namespace Database\Factories;
-
+use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +17,9 @@ class OrganizationMemberFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::inRandomOrder()->first()->id,
+            'organization_id' => Organization::inRandomOrder()->first()->id,
+            'role' => fake()->randomElement(['owner', 'member']),
         ];
     }
 }

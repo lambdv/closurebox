@@ -123,6 +123,18 @@ return new class extends Migration
             $table->enum('type', ['ec2', 'pgdb']);
             $table->enum('status', ['pending', 'accepted', 'declined'])
                 -> default('pending');
+
+            $table->foreignId('organization_id')
+                ->nullable()
+                ->constrained('organizations')
+                ->onDelete('restrict');
+
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('restrict');
+
+
             $table->timestamps();
         });
     }
