@@ -22,7 +22,7 @@ class CreateEc2Product implements ShouldQueue{
 
     public function __construct(
         public array $params,
-        public int $request_id, //TODO: request should have an assoiated org and user id 
+        public int $request_id, //TODO: request should have an assoiated org and user id
         public int $organization_id
     ){}
 
@@ -51,7 +51,7 @@ class CreateEc2Product implements ShouldQueue{
             'organization_id' => $this->organization_id ?? 1,
             'instance_id' => $instanceId,
             'details' => $res->toArray(),
-            'status' => 'pending',
+            'status' => 'active',
         ]);
 
         //update product_request to accepted
@@ -82,7 +82,7 @@ class CreateEc2Product implements ShouldQueue{
         // Send user notification of failure
         //TODO: send user notification of failure
     }
-    
+
     public function middleware() {
         return [
            new IsAuthorized,

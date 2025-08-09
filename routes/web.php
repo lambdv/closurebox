@@ -20,7 +20,7 @@ Volt::route('/servers', 'pages.servers')
     ->middleware(['auth', 'verified'])
     ->name('servers');
 
-Volt::route('/test', 'pages.test')
+Volt::route('/admin', 'pages.admin') //ONLY FOR TESTING
     ->middleware(['auth', 'verified'])
     ->name('test');
 

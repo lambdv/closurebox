@@ -68,13 +68,23 @@ return new class extends Migration
 
             $table->string('instance_id');
 
-            $table->enum('status',['pending', 'active', 'stopped', 'terminated']);
+            $table->enum('status',['active', 'stopped', 'terminated']);
 
             $table->json('details')
                 ->nullable();
 
             $table->timestamps();
         });
+
+        /**
+         * Status Check Result	Meaning
+2/2 checks passed	Both system and instance checks succeeded. The instance is healthy.
+1/2 checks passed (System check failed)	Instance is running, but AWS infrastructure has an issue (e.g., hardware failure, host networking issue).
+1/2 checks passed (Instance check failed)	Instance is running, but the OS/network configuration is preventing reachability (e.g., kernel panic, network misconfiguration, firewall rules).
+0/2 checks passed	Both system and instance checks failed — AWS infrastructure problem and instance-level problem.
+Initializing	Instance checks haven’t completed yet (shortly after launch, reboot, or status reset).
+Insufficient data	AWS doesn’t yet have enough information to report a check status (often after starting/stopping or in rare API delays).
+         */
 
         // Invoices
         Schema::create('invoices', function (Blueprint $table) {
