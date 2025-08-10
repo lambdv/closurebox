@@ -12,6 +12,11 @@ new
 #[Title('Servers')]
 class extends Component {
     public $name;
+    public $org;
+
+    public function mount(string $org){
+        $this->org = $org;
+    }
 
     public function createServer(): void{
         $user = Auth::user();
