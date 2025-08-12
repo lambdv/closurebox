@@ -9,31 +9,16 @@ Route::get('/', function () {
 })->name('home');
 
 
-Volt::route('/dashboard', 'pages.dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
 
-Volt::route('/org/{org}/servers', 'pages.org_servers')
-    ->middleware(['auth', 'verified'])
-    ->name('org.servers');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Volt::route('/dashboard', 'pages.dashboard')->name('dashboard');
+    Volt::route('/databases', 'pages.databaseProducts')->name('databaseProducts');
+    Volt::route('/databases/{id}', 'pages.databaseProductDetails')->name('databaseProductDetails');
 
-Volt::route('/servers', 'pages.servers')
-    ->middleware(['auth', 'verified'])
-    ->name('servers');
-
-Volt::route('/servers/{id}', 'pages.serverDetails')
-    ->middleware(['auth', 'verified'])
-    ->name('serverDetails');
-
-
-
-
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Volt::route('/{org}', 'pages.dashboard')->name('dashboard');
-//     Volt::route('/{org}/servers', 'pages.servers')->name('servers');
-//     Volt::route('/{org}/servers/{id}', 'pages.serverDetails')->name('serverDetails');
-// });
+    Volt::route('/servers', 'pages.servers')->name('servers');
+    Volt::route('/servers/{id}', 'pages.serverDetails')->name('serverDetails');
+});
 
 
 Route::middleware(['auth'])->group(function () {

@@ -1,4 +1,3 @@
-
 <?php
 namespace App\Services;
 use App\Models\EC2Product;
@@ -53,6 +52,10 @@ class MockEC2Service extends EC2Service{
             Log::error("There was a problem creating the EC2 instance: {$e->getMessage()}\n");
             throw $e;
         }
+    }
+
+    public function terminate(array $instanceIds)
+    {
     }
 }
 

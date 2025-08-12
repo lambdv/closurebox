@@ -30,7 +30,15 @@ class CreateEc2Product implements ShouldQueue{
         Log::info("Creating new EC2 Product...");
 
         try{
-            $res = new EC2Service()->new($this->params);
+            $res = null;
+            if(\filter_var(env('INFRA_MODE', false), FILTER_VALIDATE_BOOLEAN) === true){ 
+
+                $res = new EC2Service()->new($this->params);
+            }
+            else {
+                Log::info("Creating new EC2 Product in mock mode...");
+                $res = new MockEC2Service()->new($this->params);
+            }
             $this->aws_result = $res;
         }
         catch(\Exception $e){

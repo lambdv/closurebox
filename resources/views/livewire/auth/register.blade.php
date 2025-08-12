@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Organization;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,14 +25,18 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
-
         $validated['password'] = Hash::make($validated['password']);
 
         event(new Registered(($user = User::create($validated))));
 
+        $org = Organization::create([
+            'name' => $this->name . '\s-organization',
+        ]);
+        $org->users()->attach($user->id, ['role' => 'owner']);
+
         Auth::login($user);
 
-        ///$this->redirectIntended(route('dashboard', absolute: false), navigate: true);
+        $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
         $this->redirect('/dashboard', navigate: true);
     }
 }; ?>
