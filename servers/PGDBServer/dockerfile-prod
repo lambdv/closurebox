@@ -1,0 +1,18 @@
+# syntax=docker/dockerfile:1
+
+# Use the official Postgres image for production
+FROM postgres:16
+
+# Default credentials (override with environment variables)
+ENV POSTGRES_USER=${POSTGRES_USER:-postgres} \
+    POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres} \
+    POSTGRES_DB=${POSTGRES_DB:-postgres}
+
+# Expose PostgreSQL port
+EXPOSE 5432
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" || exit 1
+
+# The volume will be mounted at runtime, not defined in Dockerfile

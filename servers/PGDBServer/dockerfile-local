@@ -1,0 +1,28 @@
+# syntax=docker/dockerfile:1
+
+# Use the official lightweight Postgres image
+#FROM postgres:16
+FROM postgres:16-alpine
+
+LABEL org.opencontainers.image.title="TitanBox PostgreSQL" \
+      org.opencontainers.image.description="PostgreSQL for local development" \
+      org.opencontainers.image.licenses="MIT"
+
+# Default credentials/database (can be overridden at runtime)
+ENV POSTGRES_USER=${POSTGRES_USER:-postgres} \
+    POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres} \
+    POSTGRES_DB=${POSTGRES_DB:-postgres}
+
+# Expose PostgreSQL port
+EXPOSE 5432
+
+# Healthcheck to ensure Postgres is accepting connections
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=5 \
+  CMD pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" || exit 1
+
+# Persist database data (the base image already defines this, but it doesn't hurt to be explicit)
+VOLUME ["/var/lib/postgresql/data"]
+
+# The base image sets the correct entrypoint and CMD, so nothing else needed
+
+

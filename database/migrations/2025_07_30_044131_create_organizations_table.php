@@ -41,23 +41,22 @@ return new class extends Migration
                 ->default('member');
         });
 
-        // Schema::create('pgdb_products', function (Blueprint $table) {
-        //     $table->id();
+        Schema::create('pgdb_products', function (Blueprint $table) {
+            $table->id();
 
-        //     $table->foreignId('organization_id')
-        //         ->constrained()
-        //         ->onDelete('cascade');
+            $table->foreignId('organization_id')
+                ->constrained()
+                ->onDelete('cascade');
 
-        //     $table->string('instance_id');
+            $table->string('name')->nullable();
+            $table->enum('status',['active', 'paused', 'terminated'])
+                ->default('active');
 
-        //     $table->enum('status',['active', 'stopped', 'terminated'])
-        //         ->default('active');
+            $table->json('details')
+                ->nullable();
 
-        //     $table->json('details')
-        //         ->nullable();
-
-        //     $table->timestamps();
-        // });
+            $table->timestamps();
+        });
 
         Schema::create('ec2_products', function (Blueprint $table) {
             $table->id();
@@ -78,15 +77,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        /**
-         * Status Check Result	Meaning
-            2/2 checks passed	Both system and instance checks succeeded. The instance is healthy.
-            1/2 checks passed (System check failed)	Instance is running, but AWS infrastructure has an issue (e.g., hardware failure, host networking issue).
-            1/2 checks passed (Instance check failed)	Instance is running, but the OS/network configuration is preventing reachability (e.g., kernel panic, network misconfiguration, firewall rules).
-            0/2 checks passed	Both system and instance checks failed — AWS infrastructure problem and instance-level problem.
-            Initializing	Instance checks haven’t completed yet (shortly after launch, reboot, or status reset).
-            Insufficient data	AWS doesn’t yet have enough information to report a check status (often after starting/stopping or in rare API delays).
-         */
 
         // Invoices
         Schema::create('invoices', function (Blueprint $table) {
