@@ -27,7 +27,7 @@ Bastion/Gateway proxy routing
 
 
 
-# Features titanbox serviers will have (around ec2 and vps)
+# Features closurebox serviers will have (around ec2 and vps)
     - metadata: name, DNS/IP, region+AZ, instance type, state, system uptime
         public/private IPs
         Static IP (Elastic IP) attachment

@@ -52,7 +52,7 @@
 	- 
 
   
-# Features titanbox serviers will have
+# Features closurebox serviers will have
 
     - metadata: name, DNS/IP, region+AZ, instance type, state, system uptime
 
