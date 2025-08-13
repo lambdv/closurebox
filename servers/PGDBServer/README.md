@@ -1,7 +1,7 @@
-EC2 Setup steps:
-Attach an EBS volume to your EC2 instance
-Format and mount it: sudo mkfs -t xfs /dev/xvdf && sudo mkdir /data && sudo mount /dev/xvdf /data
-Update the volume path in docker-compose: - /data:/var/lib/postgresql/data
-Add to /etc/fstab for persistence: /dev/xvdf /data xfs defaults,nofail 0 2
+# Local
+```bash
+docker-compose -f docker-compose.local.yml up -d
 
-docker-compose -f docker-compose.prod.yml up -d
+docker ps
+docker exec -it {id}  psql -U admin -d app_database
+```

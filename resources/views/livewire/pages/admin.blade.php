@@ -5,17 +5,20 @@ use App\Jobs\ProcessCreateProduct;
 use App\Models\ProductRequest;
 use App\Mail\Greeting;
 use App\Services\EC2Service;
+use App\Services\PGDBManagerService;
 
 new #[Layout('components.layouts.app')] #[Title('Servers')] 
 class extends Component {
     public $name;
     public $vms;
     public $num_vms;
-
+    public $users;
     public function mount(): void{
-        $this->vms = new EC2Service()->describeInstances();
-        dd($this->vms);
+        //$this->vms = new EC2Service()->describeInstances();
+            //dd($this->vms);
         // /$this->num_vms = count($this->vms);
+        $this->users = new PGDBManagerService()->listUsers();
+        dd($this->users);
     }
 
     public function test(): void{

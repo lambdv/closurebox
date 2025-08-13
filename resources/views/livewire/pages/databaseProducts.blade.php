@@ -10,7 +10,7 @@ use App\Services\EC2Service;
 use App\Services\MockEC2Service;
 new
 #[Layout('components.layouts.app')]
-#[Title('Servers')]
+#[Title('Databases')]
 class extends Component {
     public $name;
     public $servers;
@@ -55,12 +55,12 @@ class extends Component {
     }
 
     public function deleteServer(string $instanceId){
-        // if(\filter_var(env('INFRA_MODE', false), FILTER_VALIDATE_BOOLEAN) === true){ 
-        //     (new EC2Service())->terminate([$instanceId]);
-        // }
-        // else {
+        if(\filter_var(env('INFRA_MODE', false), FILTER_VALIDATE_BOOLEAN) === true){ 
+            (new EC2Service())->terminate([$instanceId]);
+        }
+        else {
             (new MockEC2Service())->terminate([$instanceId]);
-        //}
+        }
         $server = EC2Product::where('instance_id', $instanceId)->update([
             'status' => 'terminated',
         ]);
@@ -71,35 +71,33 @@ class extends Component {
 };?>
 
 <div>
-    <h1 class="text-2xl font-bold">Databases</h1>
-    <div>
-        @if (session('success'))
-            <div class="px-4 py-2 bg-green-500 text-white rounded-md">
-                {{ session('success') }}
-            </div>
-        @endif
-
+    @if (session('success'))
+        <div class="px-4 py-2 bg-green-500 text-white rounded-md">
+            {{ session('success') }}
+        </div>
+    @endif
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Databases</h1>
         <flux:modal.trigger name="create-database">
             <flux:button>New</flux:button>
         </flux:modal.trigger>
-
-      
-        <flux:modal name="create-database" class="md:w-96">
-            <div class="space-y-4">
-              <flux:input wire:model.defer="name" label="Database Name" placeholder="Database name" required />
-              <div class="flex justify-end gap-2">
-                <flux:modal.close>
-                  <flux:button variant="filled">Cancel</flux:button>
-                </flux:modal.close>
-                <flux:button type="button" variant="primary" wire:click="createServer">Create</flux:button>
-              </div>
-            </div>
-        </flux:modal>
-
     </div>
+
+    <flux:modal name="create-database" class="md:w-96">
+        <div class="space-y-4">
+          <flux:input wire:model.defer="name" label="Database Name" placeholder="Database name" required />
+          <div class="flex justify-end gap-2">
+            <flux:modal.close>
+              <flux:button variant="filled">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button type="button" variant="primary" wire:click="createServer">Create</flux:button>
+          </div>
+        </div>
+    </flux:modal>
+    
     <br/>
 
-    {{-- @if(Gate::allows('admin'))
+    @if(Gate::allows('admin'))
         <div>
             <table class="w-full">
                 <thead class="bg-gray-800 text-white">
@@ -118,8 +116,7 @@ class extends Component {
                 </tbody>
             </table>
         </div>
-
-    @endif --}}
+    @endif
 
     <br/>
 

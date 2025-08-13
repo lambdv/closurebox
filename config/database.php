@@ -42,6 +42,20 @@ return [
             'synchronous' => null,
         ],
 
+        'pg_cluster_1' => [
+            'driver' => 'pgsql',
+            'host' => env('PGDB_CLUSTER_1_HOST', '127.0.0.1'),
+            'port' => env('PGDB_CLUSTER_1_PORT', '5432'),
+            'database' => 'postgres', // Connect to default postgres database
+            'username' => env('PGDB_CLUSTER_1_USER', 'admin'),
+            'password' => env('PGDB_CLUSTER_1_PASS', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
