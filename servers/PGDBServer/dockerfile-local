@@ -1,0 +1,14 @@
+FROM postgres:16-alpine
+
+ENV POSTGRES_USER=${POSTGRES_USER:-postgres} \
+    POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres} \
+    POSTGRES_DB=${POSTGRES_DB:-postgres}
+
+EXPOSE 5432
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=5 \
+  CMD pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" || exit 1
+
+VOLUME ["/var/lib/postgresql/data"]
+
+

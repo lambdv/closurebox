@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use Inertia\Inertia;
 
@@ -9,44 +9,30 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-//Route::view('dashboard', 'dashboard')
-//    ->middleware(['auth', 'verified'])
-//    ->name('dashboard');
-
-
-Volt::route('/dashboard', 'pages.dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
-Volt::route('/servers', 'pages.servers')
-    ->middleware(['auth', 'verified'])
-    ->name('servers');
-
-Volt::route('/test', 'pages.test')
-    ->middleware(['auth', 'verified'])
-    ->name('test');
 
 
 
-// Route::get('/greeting', function () {
-//     $user = Auth()->user();
-//     return new App\Mail\Greeting($user);
-// })    ->middleware(['auth', 'verified']);
+Route::middleware(['auth', 'verified'])->group(function () {
+    Volt::route('/dashboard', 'pages.dashboard')->name('dashboard');
+    Volt::route('/databases', 'pages.databaseProducts')->name('databaseProducts');
+    Volt::route('/databases/{id}', 'pages.databaseProductDetails')->name('databaseProductDetails');
+
+    Volt::route('/servers', 'pages.servers')->name('servers');
+    Volt::route('/servers/{id}', 'pages.serverDetails')->name('serverDetails');
+});
 
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
+
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-
-// Route::get('/', function () {
-//     return Inertia::render('welcome');
-// })->name('home');
-
-
+Volt::route('/admin', 'pages.admin') //ONLY FOR TESTING
+    ->middleware(['auth', 'verified'])
+    ->name('test');
 
 require __DIR__.'/auth.php';

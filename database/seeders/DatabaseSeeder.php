@@ -25,6 +25,11 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
+        $org = Organization::create([
+            'name' => $testUser->name . 's-organization',
+        ]);
+        $org->users()->attach($testUser->id, ['role' => 'owner']);
+
         // Create some organizations
         $organizations = Organization::factory(5)->create();
 

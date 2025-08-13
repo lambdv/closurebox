@@ -22,7 +22,7 @@ class CreateEc2Product implements ShouldQueue{
 
     public function __construct(
         public array $params,
-        public int $request_id, //TODO: request should have an assoiated org and user id 
+        public int $request_id, //TODO: request should have an assoiated org and user id
         public int $organization_id
     ){}
 
@@ -30,7 +30,15 @@ class CreateEc2Product implements ShouldQueue{
         Log::info("Creating new EC2 Product...");
 
         try{
-            $res = new EC2Service()->new($this->params);
+            $res = null;
+            if(\filter_var(env('INFRA_MODE', false), FILTER_VALIDATE_BOOLEAN) === true){ 
+
+                $res = new EC2Service()->new($this->params);
+            }
+            else {
+                Log::info("Creating new EC2 Product in mock mode...");
+                $res = new MockEC2Service()->new($this->params);
+            }
             $this->aws_result = $res;
         }
         catch(\Exception $e){
@@ -51,7 +59,7 @@ class CreateEc2Product implements ShouldQueue{
             'organization_id' => $this->organization_id ?? 1,
             'instance_id' => $instanceId,
             'details' => $res->toArray(),
-            'status' => 'pending',
+            'status' => 'active',
         ]);
 
         //update product_request to accepted
@@ -82,7 +90,7 @@ class CreateEc2Product implements ShouldQueue{
         // Send user notification of failure
         //TODO: send user notification of failure
     }
-    
+
     public function middleware() {
         return [
            new IsAuthorized,

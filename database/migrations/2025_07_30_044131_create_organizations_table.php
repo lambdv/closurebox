@@ -41,23 +41,63 @@ return new class extends Migration
                 ->default('member');
         });
 
-        // Schema::create('pgdb_products', function (Blueprint $table) {
+        //tied to a user for now
+        Schema::create('pgdb_products', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignIdFor(User::class) //tied to a user
+                ->constrained()
+                ->onDelete('restrict'); //need to delete the pgdb product before deleting the user
+
+            $table->string('name')->nullable();
+            $table->string('db_name')->nullable();
+
+
+            $table->enum('status',['active', 'terminated'])->default('active');
+
+            // $table->json('details')
+            //     ->nullable();
+
+            $table->timestamps();
+        });
+
+
+        // Schema::create('pgdb_role', function (Blueprint $table) {
         //     $table->id();
 
-        //     $table->foreignId('organization_id')
+        //     $table->foreignIdFor(User::class)
         //         ->constrained()
-        //         ->onDelete('cascade');
+        //         ->onDelete('restrict'); //need to delete the pgdb product before deleting the user
 
-        //     $table->string('instance_id');
+        //     $table->string('name')->nullable();
+        //     $table->string('db_name')->nullable();
 
-        //     $table->enum('status',['active', 'stopped', 'terminated'])
-        //         ->default('active');
+
+        //     $table->enum('status',['active', 'terminated'])->default('active');
+
+        //     // $table->json('details')
+        //     //     ->nullable();
+
+        //     $table->timestamps();
+        // });
+        // //tied to a user for now
+        // Schema::create('pgdb_instances', function (Blueprint $table) {
+        //     $table->id();
+
+        //     $table->foreignIdFor(User::class)
+        //         ->constrained()
+        //         ->onDelete('restrict'); //need to delete the pgdb instance before deleting the user
+
+        //     $table->string('name')->nullable();
+
+        //     $table->enum('status',['active', 'terminated'])->default('active');
 
         //     $table->json('details')
         //         ->nullable();
 
         //     $table->timestamps();
         // });
+
 
         Schema::create('ec2_products', function (Blueprint $table) {
             $table->id();
@@ -67,14 +107,17 @@ return new class extends Migration
                 ->onDelete('restrict'); //if org is deleted, ec2 instances MUST be handled/deleted first
 
             $table->string('instance_id');
+            $table->string('name')->nullable();
 
-            $table->enum('status',['pending', 'active', 'stopped', 'terminated']);
+
+            $table->enum('status',['active', 'paused', 'terminated']);
 
             $table->json('details')
                 ->nullable();
 
             $table->timestamps();
         });
+
 
         // Invoices
         Schema::create('invoices', function (Blueprint $table) {
@@ -107,9 +150,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('invoices')
                 ->onDelete('set null');
-
             $table->decimal('amount', 10, 2);
-
             $table->enum('status', ['confirmed', 'refunded', 'cancelled'])
                 ->default('confirmed');
 
