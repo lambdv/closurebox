@@ -3,13 +3,13 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
-use Illuminate\Support\Str;
-use App\Models\Organization;
-use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
+
+
+
 
 
 Route::middleware(['auth', 'verified'])->group(function () {

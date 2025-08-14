@@ -42,7 +42,6 @@
         @routes
         @viteReactRefresh
         @vite([
-            'resources/js/app.js',
             'resources/inertia/app.tsx', 
             "resources/inertia/pages/{$page['component']}.tsx"
         ])

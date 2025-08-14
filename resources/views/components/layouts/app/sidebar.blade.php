@@ -137,5 +137,6 @@
         {{ $slot }}
 
         @fluxScripts
+        @viteReactRefresh
     </body>
 </html>

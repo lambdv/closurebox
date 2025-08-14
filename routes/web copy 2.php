@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
-use Illuminate\Support\Str;
-use App\Models\Organization;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -12,11 +10,15 @@ Route::get('/', function () {
 })->name('home');
 
 
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('/dashboard', 'pages.dashboard')->name('dashboard');
-
     Volt::route('/databases', 'pages.databaseProducts')->name('databaseProducts');
     Volt::route('/databases/{id}', 'pages.databaseProductDetails')->name('databaseProductDetails');
+
+    Volt::route('/servers', 'pages.servers')->name('servers');
+    Volt::route('/servers/{id}', 'pages.serverDetails')->name('serverDetails');
 });
 
 

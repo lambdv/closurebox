@@ -8,6 +8,6 @@
 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <wireui:scripts />
-<script src="https://unpkg.com/alpinejs" defer></script>
-@vite(['resources/css/app.css', 'resources/js/app.js', 'resources/inertia/app.js'])
+{{-- <script src="https://unpkg.com/alpinejs" defer></script> --}}
+@vite(['resources/css/app.css', 'resources/inertia/app.tsx'])
 @fluxAppearance

@@ -61,6 +61,38 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+/* Ensure sidebar takes full height */
+flux-sidebar {
+    height: 100vh !important;
+    min-height: 100vh !important;
+}
+
+/* Ensure proper layout for Volt pages */
+.dashboard-content {
+    min-height: calc(100vh - 4rem);
+}
+
+/* Additional Flux sidebar styling */
+[data-flux-sidebar] {
+    height: 100vh !important;
+    min-height: 100vh !important;
+}
+
+/* Ensure body and html take full height */
+html, body {
+    height: 100%;
+    min-height: 100vh;
+}
+
+/* Ensure proper Flux layout */
+flux-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 280px !important;
+}
+
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */

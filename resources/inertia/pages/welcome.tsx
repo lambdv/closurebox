@@ -17,12 +17,12 @@ export default function Welcome() {
                 <header className="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
                     <nav className="flex items-center justify-end gap-4">
                         {user ? (
-                            <Link
+                            <a
                                 href={route('dashboard')}
                                 className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                             >
                                 Dashboard
-                            </Link>
+                            </a>
                         ) : (
                             <>
                                 <a
@@ -44,9 +44,9 @@ export default function Welcome() {
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <main className="flex w-full max-w-[335px] flex-col-reverse lg:max-w-4xl lg:flex-row">
                         <div className="flex-1 rounded-br-lg rounded-bl-lg bg-white p-6 pb-12 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-tl-lg lg:rounded-br-none lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
-                            <h1 className="mb-1 text-2xl font-bold">Titanbox</h1>
+                            <h1 className="mb-1 text-2xl font-bold">ClosureBox</h1>
                             <p>Everything you need to ship.</p>
-                            <div className="mb-10"></div>
+                            <div className="mb-1"></div>
                             <ul className="flex gap-3 text-sm leading-normal">
                                 <li>
                                     {user ? (
