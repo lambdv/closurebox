@@ -9,49 +9,90 @@ use App\Services\PGDBManagerService;
 
 new #[Layout('components.layouts.app')] #[Title('Servers')] 
 class extends Component {
-    public $name;
-    public $vms;
-    public $num_vms;
     public $users;
+    public $databases;
+    public $username;
+    public $password;
+    public $databaseName;
+    public $owner;
     public function mount(): void{
-        //$this->vms = new EC2Service()->describeInstances();
-            //dd($this->vms);
-        // /$this->num_vms = count($this->vms);
-        $this->users = new PGDBManagerService()->listUsers();
-        dd($this->users);
+        $pg_manager = new PGDBManagerService();
+        $this->users = $pg_manager->getUsers();
+        $this->databases = $pg_manager->getAllDatabases();
+
+        $this->owner = $this->users[0]->rolname;
+        //dd(vars: $this->databases);
     }
 
-    public function test(): void{
-        $user = Auth()->user();
-        Mail::to($user)
-            // ->cc($moreUsers)
-            // ->bcc($evenMoreUsers)
-            ->queue(new Greeting($user));
-        //dd("test");
+    public function createUser(): void{
+        $pg_manager = new PGDBManagerService();
+        $pg_manager->createNewUser($this->username, $this->password);
+        $this->redirect(route('admin'));
+    }
+
+    public function createDatabase(): void{
+        $pg_manager = new PGDBManagerService();
+        $pg_manager->createNewDatabase($this->databaseName, $this->owner);
+        $this->redirect(route('admin'));
     }
 };?>
 
 <div>
-    <h1>test</h1>
-    <button wire:click="test">send mail</button>
 
-
-    <div>
-        <h1>all VMS</h1>
-        <p>Number of VMS: {{ $num_vms }}</p>
+    <div id="users" class="p-10">
+        <h1>users</h1>
+        <form wire:submit="createUser">
+            <input type="text" wire:model="username" placeholder="username">
+            <input type="password" wire:model="password" placeholder="password">
+            <button type="submit">create user</button>
+        </form>
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>super</th>
                 </tr>
             </thead>
-            {{-- <tbody>
-                @foreach($vms as $vm)
+            <tbody>
+                @foreach($users as $user)
                     <tr>
-                        <td>{{ $vm['Instances'][0]['InstanceId'] }}</td>
+                        <td>{{ $user->oid }}</td>
+                        <td>{{ $user->rolname }}</td>
+                        <td>{{ $user->rolsuper }}</td>
                     </tr>
                 @endforeach
-            </tbody> --}}
+            </tbody>
         </table>
     </div>
-  </div>
+
+    <div id="databases" class="p-10">
+        <h1>databases</h1>
+        <form wire:submit="createDatabase">
+            <input type="text" wire:model="databaseName" placeholder="database name">
+            <select wire:model="owner" class="border-2 border-gray-300 rounded-md p-2">
+                @foreach($users as $user)
+                    <option value="{{ $user->rolname }}">{{ $user->rolname }}</option>
+                @endforeach
+            </select>
+            <button type="submit">create database</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>database name</th>
+                    <th>owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($databases as $database)
+                    <tr>
+                        <td>{{ $database->oid }}</td>
+                        <td>{{ $database->datname }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -31,6 +31,6 @@ Route::middleware(['auth'])->group(function () {
 
 Volt::route('/admin', 'pages.admin') //ONLY FOR TESTING
     ->middleware(['auth', 'verified'])
-    ->name('test');
+    ->name('admin');
 
 require __DIR__.'/auth.php';
