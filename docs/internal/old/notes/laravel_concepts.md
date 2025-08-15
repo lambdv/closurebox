@@ -8,3 +8,5 @@ altenrative to facades for interact with laravel's features explcitly and define
 eg: Illuminate\Contracts\Auth\Factory == Auth() facade
 https://laravel.com/docs/12.x/contracts
 
+
+

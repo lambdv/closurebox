@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
+use Laravel\Cashier\Cashier;
+use Illuminate\Database\Eloquent\Model;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
         //     return Limit::perMinute(1)->by($job->orginization->id);
         // });
         //Model::preventLazyLoading();
+        Cashier::calculateTaxes();
     }
 }

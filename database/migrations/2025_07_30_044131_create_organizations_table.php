@@ -41,63 +41,41 @@ return new class extends Migration
                 ->default('member');
         });
 
+        Schema::create('pgdb_roles', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string('pgdb_oid');
+            //$table->string('cluster_id')->nullable(); //for which cluster?
+
+            $table->foreignIdFor(User::class) //piviot for users
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('restrict'); //need to handle role before deleting user
+
+        });
+
         //tied to a user for now
+        //for now a user has 1 role and all their db is tied to that role
+            //should have multiple roles for users and store relation between roles and databases and users
         Schema::create('pgdb_products', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(User::class) //tied to a user
+            $table->foreignIdFor(User::class) //tied to a user TODO: tie to org
                 ->constrained()
                 ->onDelete('restrict'); //need to delete the pgdb product before deleting the user
 
             $table->string('name')->nullable();
-            $table->string('db_name')->nullable();
+            $table->string('db_name')->nullable(); //name of db in pgdb cluster
+            //$table->string('cluster_id')->nullable(); //TODO: for futher use when we have multiple clusters
 
 
             $table->enum('status',['active', 'terminated'])->default('active');
 
-            // $table->json('details')
+            // $table->json('details') //should be dynamic (query the actual database)
             //     ->nullable();
 
             $table->timestamps();
         });
-
-
-        // Schema::create('pgdb_role', function (Blueprint $table) {
-        //     $table->id();
-
-        //     $table->foreignIdFor(User::class)
-        //         ->constrained()
-        //         ->onDelete('restrict'); //need to delete the pgdb product before deleting the user
-
-        //     $table->string('name')->nullable();
-        //     $table->string('db_name')->nullable();
-
-
-        //     $table->enum('status',['active', 'terminated'])->default('active');
-
-        //     // $table->json('details')
-        //     //     ->nullable();
-
-        //     $table->timestamps();
-        // });
-        // //tied to a user for now
-        // Schema::create('pgdb_instances', function (Blueprint $table) {
-        //     $table->id();
-
-        //     $table->foreignIdFor(User::class)
-        //         ->constrained()
-        //         ->onDelete('restrict'); //need to delete the pgdb instance before deleting the user
-
-        //     $table->string('name')->nullable();
-
-        //     $table->enum('status',['active', 'terminated'])->default('active');
-
-        //     $table->json('details')
-        //         ->nullable();
-
-        //     $table->timestamps();
-        // });
-
 
         Schema::create('ec2_products', function (Blueprint $table) {
             $table->id();

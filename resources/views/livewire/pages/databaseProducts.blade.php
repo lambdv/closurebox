@@ -13,61 +13,35 @@ new
 #[Title('Databases')]
 class extends Component {
     public $name;
-    public $servers;
+    public $databases;
+
+
     public function mount(){
         $this->name = 'test';
-        $this->servers = $this->getServers();
+        $this->databases = $this->getDatabases();
+        $this ->databases = $this->getDatabases();
     }
 
-    public function createServer(): void{
-        $user = Auth::user();
-        $org = $user->organizations->first(); // Get the first organization
-
-        if (!$org) {
-            session()->flash('error', 'No organization found. Please create an organization first.');
-            return;
-        }
-
-        $req = ProductRequest::create([
-            'type' => 'ec2',
-            'organization_id' => $org->id,
-        ]); //optimistically create the request
-
-
-        CreateEc2Product::dispatch(
-            $params = [
-                'name' => $this->name,
-            ],
-            $req->id,
-            $org->id
-        );
-
-        $this->redirectRoute('databaseProducts');
-        session()->flash('success', "Server created successfully!");
+    public function createDatabase(){
+        
     }
 
-    public function getServers(){
-        $user = Auth::user();
-        $org = $user->organizations->first();
-        $servers = $org->ec2Products->fresh();
+    public function deleteDatabase($instanceId){
 
-        return $servers->toArray();
     }
 
-    public function deleteServer(string $instanceId){
-        if(\filter_var(env('INFRA_MODE', false), FILTER_VALIDATE_BOOLEAN) === true){ 
-            (new EC2Service())->terminate([$instanceId]);
-        }
-        else {
-            (new MockEC2Service())->terminate([$instanceId]);
-        }
-        $server = EC2Product::where('instance_id', $instanceId)->update([
-            'status' => 'terminated',
-        ]);
-
-        $this->redirectRoute('databaseProducts');
-        session()->flash('success', "Database deleted successfully!");
+    public function getDatabases(){
+        return [
+            [
+                'id' => 1,
+                'name' => 'test',
+                'db_name' => 'test',
+                'status' => 'active',
+           ],
+        ];
     }
+
+
 };?>
 
 <div>
@@ -90,70 +64,44 @@ class extends Component {
             <flux:modal.close>
               <flux:button variant="filled">Cancel</flux:button>
             </flux:modal.close>
-            <flux:button type="button" variant="primary" wire:click="createServer">Create</flux:button>
+            <flux:button type="button" variant="primary" wire:click="createDatabase">Create</flux:button>
           </div>
         </div>
     </flux:modal>
     
     <br/>
 
-    @if(Gate::allows('admin'))
-        <div>
-            <table class="w-full">
-                <thead class="bg-gray-800 text-white">
-                    <tr>
-                        <th>ID</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-gray-700 text-white">
-                    @foreach(ProductRequest::all() as $request)
-                        <tr>
-                            <td>{{ $request->id }}</td>
-                            <td>{{ $request->status }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
-
-    <br/>
-
     <div>
         <table class="w-full">
             <thead class="bg-gray-800 text-white text-left">
-                <tr>
+            <tr>
+                                <td>name</td>
+                                <td>db_name</td>
+                                <td>status</td>
+                                <td>actions</td>
 
-                </tr>
+                            </tr>
             </thead>
             <tbody class="bg-gray-700 text-white">
-                @foreach(($this->servers) as $server)
-                    @if($server['status'] !== 'terminated')
+                @foreach(($this->databases) as $database)
+                    @if($database['status'] !== 'terminated')
                         <div class="flex flex-col gap-2">
                             <tr>
-                                <td>{{ $server['instance_id'] }}</td>
-                                {{-- <td>{{ dd($server) }}</td> --}}
-
-
-                                {{-- <td>{{ $server['organization_id'] }}</td> --}}
-                                <td>{{ $server['status'] }}</td>
-                                <td>{{ json_encode(new EC2Service()->describeInstance($server['instance_id'])) }}</td>
+                                <td>{{ $database['name'] }}</td>
+                                <td>{{ $database['db_name'] }}</td>
+                                <td>{{ $database['status'] }}</td>
                                 <td>
-                                    {{-- add a comfierm model--}}
-                                    <button class="px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer" wire:click="deleteServer('{{ $server['instance_id'] }}')">Delete</button>
+                                    
                                 </td>
-                            </tr>
 
-                            {{-- <p>{{ json_encode($server['details']) }}</p> --}}
-                            {{-- <p>{{ json_encode(new EC2Service()->describeInstance("i-0b874b7f30549bd93")) }}</p> --}}
+                            </tr>
                         </div>
                     @endif
                 @endforeach
 
-                @if(count($this->servers) == 0)
+                @if(count($this->databases) == 0)
                     <tr>
-                        <td colspan="4" class="text-center">No servers found</td>
+                        <td colspan="4" class="text-center">No databases found</td>
                     </tr>
                 @endif
             </tbody>
