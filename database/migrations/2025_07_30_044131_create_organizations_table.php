@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
+use App\Models\PGDBRole;
+use App\Models\PGDBProduct;
 
 return new class extends Migration
 {
@@ -19,8 +21,8 @@ return new class extends Migration
 
             //TODO: could have a billing account table for each organization
             //TODO: DON'T KEEP STRIPE DETAILS NULLABLE
-            $table->string('stripe_id')->unique() -> nullable(); //TODO: stripe id
-            $table->string('stripe_email')-> nullable(); //TODO: stripe email
+            // $table->string('stripe_id')->unique() -> nullable(); //TODO: stripe id
+            // $table->string('stripe_email')-> nullable(); //TODO: stripe email
             //spread stripe object details
         });
 
@@ -41,40 +43,58 @@ return new class extends Migration
                 ->default('member');
         });
 
-        Schema::create('pgdb_roles', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('pgdb_oid');
-            //$table->string('cluster_id')->nullable(); //for which cluster?
 
-            $table->foreignIdFor(User::class) //piviot for users
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('restrict'); //need to handle role before deleting user
-
-        });
 
         //tied to a user for now
         //for now a user has 1 role and all their db is tied to that role
             //should have multiple roles for users and store relation between roles and databases and users
         Schema::create('pgdb_products', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
 
-            $table->foreignIdFor(User::class) //tied to a user TODO: tie to org
-                ->constrained()
-                ->onDelete('restrict'); //need to delete the pgdb product before deleting the user
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->onDelete('restrict'); 
 
-            $table->string('name')->nullable();
-            $table->string('db_name')->nullable(); //name of db in pgdb cluster
+            $table->string(column: 'instance_id'); //name of db in pgdb cluster
             //$table->string('cluster_id')->nullable(); //TODO: for futher use when we have multiple clusters
+            $table->string('name')->nullable();
 
 
-            $table->enum('status',['active', 'terminated'])->default('active');
+            $table->enum('status',['active', 'terminated'])
+                ->default('active');
+
+            // $table->foreignId('pgdb_role_id') //tied to a user TODO: tie to org
+            //     ->constrained('pgdb_roles')
+            //     ->onDelete('restrict'); //need to delete the pgdb product before deleting the user
 
             // $table->json('details') //should be dynamic (query the actual database)
             //     ->nullable();
 
+        });
+
+        
+        // postgres login roles
+        Schema::create('pgdb_roles', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
+
+            $table->foreignId('pgdb_product_id') 
+                ->constrained('pgdb_products')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
+
+            $table->foreignId('user_id') 
+                ->constrained('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict')
+                ->nullable();
+
+            $table->string('username');
+            $table->string('password');
+
+
+            //$table->string('cluster_id')->nullable(); //for which cluster?
         });
 
         Schema::create('ec2_products', function (Blueprint $table) {
@@ -140,7 +160,7 @@ return new class extends Migration
         Schema::create('product_requests', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['ec2', 'pgdb']);
-            $table->enum('status', ['pending', 'accepted', 'declined'])
+            $table->enum('status', ['pending', 'accepted', 'declined', 'failed'])
                 -> default('pending');
 
             $table->foreignId('organization_id')
@@ -152,8 +172,6 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('users')
                 ->onDelete('restrict');
-
-
             $table->timestamps();
         });
     }
@@ -166,7 +184,9 @@ return new class extends Migration
         Schema::dropIfExists('payments');
         Schema::dropIfExists('invoices');
         Schema::dropIfExists('pgdb_products');
-        Schema::dropIfExists('billing_accounts');
+        Schema::dropIfExists('pgdb_roles');
+
+        // Schema::dropIfExists('billing_accounts');
         Schema::dropIfExists('organization_user');
         Schema::dropIfExists('organizations');
     }

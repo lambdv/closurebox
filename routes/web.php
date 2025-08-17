@@ -15,8 +15,11 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('/dashboard', 'pages.dashboard')->name('dashboard');
 
-    Volt::route('/databases', 'pages.databaseProducts')->name('databaseProducts');
-    Volt::route('/databases/{id}', 'pages.databaseProductDetails')->name('databaseProductDetails');
+    Volt::route('/databases', 'pages.databaseProducts')
+        ->name('databaseProducts');
+    Volt::route('/databases/{instance_id}', 'pages.databaseProductDetails')
+        ->name('databaseProducts.show');
+    //Volt::route('/keys', 'pages.databaseKeys')->name('databaseKeys');
 });
 
 

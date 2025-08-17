@@ -7,32 +7,68 @@ use App\Models\EC2Product;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\TestJob;
 use App\Services\EC2Service;
+use App\Models\PGDBProduct;
+use App\Models\PGDBRole;
 new
 #[Layout('components.layouts.app')]
 #[Title('Servers')]
 class extends Component {
-    public $serverId;
+    public $pgdb_product;
+    public $pgdb_keys = [];
 
-    public function mount(string $id)  // matches {id} in route
+    public function mount(string $instance_id)  // matches {id} in route
     {
-        $this->serverId = $id;
-        // Example: fetch the server from DB
-        // $this->server = EC2Product::where('instance_id', $id)->firstOrFail();
+        $this->pgdb_product = PGDBProduct::where('instance_id', $instance_id)->firstOrFail();
+        
+        $roles = PGDBRole::where('user_id', Auth::user()->id)
+            ->where('pgdb_product_id', $this->pgdb_product->id)
+            ->get();
+
+        foreach ($roles as $role) {
+            $this->pgdb_keys[] = [
+                'username' => $role->username,
+                'password' => $role->password,
+            ];
+        }
     }
 
-//    public function deleteServer(string $instanceId){
-//        (new EC2Service())->terminate([$instanceId]);
-//        $server = EC2Product::where('instance_id', $instanceId)->update([
-//            'status' => 'terminated',
-//        ]);
-//
-//        $this->redirectRoute('servers');
-//        session()->flash('success', "Server deleted successfully!");
-//    }
+
+
+    
 };?>
 
 <div>
-    <h1 class="text-2xl font-bold">Server {{$serverId}}</h1>
+    <h1 class="text-2xl font-bold">Server {{$pgdb_product->instance_id}}</h1>
 
+    @foreach($pgdb_keys as $key)
+        <code class="text-xs px-5 py-2 bg-[#222222] text-gray-500 rounded-md">
+            postgresql://{{$key['username']}}:{{$key['password']}}@localhost:5432/{{$pgdb_product->instance_id}}
+        </code>
+    @endforeach
+
+
+    {{-- <table class="table-auto">
+        <tbody class="gap-2">
+            <tr class="border-b">
+                <td class="px-4 py-2">Instance ID</td>
+                <td class="px-4 py-2">{{ $serverId }}</td>
+            </tr>
+
+            <tbody class="gap-2">
+                <tr class="border-b">
+                    <td class="px-4 py-2">Status</td>
+                    <td class="px-4 py-2">{{ $serverId }}</td>
+                </tr>
+
+            <tr class="border-b">
+                <td class="px-4 py-2">Username</td>
+                <td class="px-4 py-2">{{ $serverId }}</td>
+            </tr>
+            <tr class="border-b">
+                <td class="px-4 py-2">Password</td>
+                <td class="px-4 py-2">{{ $serverId }}</td>
+            </tr>
+        </tbody>
+    </table> --}}
 
 </div>

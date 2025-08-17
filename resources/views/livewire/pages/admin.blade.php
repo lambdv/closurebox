@@ -15,10 +15,13 @@ class extends Component {
     public $password;
     public $databaseName;
     public $owner;
+    
     public function mount(): void{
         $pg_manager = new PGDBManagerService();
         $this->users = $pg_manager->getUsers();
         $this->databases = $pg_manager->getAllDatabases();
+
+        dd($this->databases);
 
         $this->owner = $this->users[0]->rolname;
         //dd(vars: $this->databases);

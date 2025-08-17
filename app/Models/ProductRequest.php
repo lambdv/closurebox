@@ -10,9 +10,14 @@ class ProductRequest extends Model{
         'type',
         'status',
         'organization_id',
+        'user_id',
     ];
 
     public function organization(): BelongsTo {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
     }
 }

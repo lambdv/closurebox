@@ -23,7 +23,13 @@
                 
                 <flux:navlist.group :heading="__('Services')" class="grid">
                     <flux:navlist.item icon="circle-stack" :href="route('databaseProducts')" :current="request()->routeIs('databaseProducts')" wire:navigate>{{ __('Databases') }}</flux:navlist.item>
-                </flux:navlist.group>   
+                    {{-- <flux:navlist.item icon="circle-stack" :href="route('databaseKeys')" :current="request()->routeIs('databaseKeys')" wire:navigate>{{ __('Keys') }}</flux:navlist.item> --}}
+               
+                </flux:navlist.group> 
+
+
+                
+                
             </flux:navlist>
 
             <flux:spacer />
