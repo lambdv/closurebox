@@ -19,6 +19,16 @@ const mainNavItems: NavItem[] = [
         href: '/servers',
         icon: Server,
     },
+    {
+        title: 'Databases',
+        href: '/databases',
+        icon: Folder,
+    },
+    {
+        title: 'PostgreSQL Admin',
+        href: '/postgres-admin',
+        icon: Server,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

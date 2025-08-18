@@ -20,6 +20,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('/databases/{instance_id}', 'pages.databaseProductDetails')
         ->name('databaseProducts.show');
     //Volt::route('/keys', 'pages.databaseKeys')->name('databaseKeys');
+    
+    // PostgreSQL Admin routes
+    Route::get('/postgres-admin', [App\Http\Controllers\PostgresAdminController::class, 'index'])->name('postgres-admin.index');
+    Route::get('/postgres-admin/test-env', [App\Http\Controllers\PostgresAdminController::class, 'testEnvironment'])->name('postgres-admin.test-env');
+    Route::post('/postgres-admin/connect', [App\Http\Controllers\PostgresAdminController::class, 'connect'])->name('postgres-admin.connect');
+    Route::post('/postgres-admin/execute-query', [App\Http\Controllers\PostgresAdminController::class, 'executeQuery'])->name('postgres-admin.execute-query');
+    Route::post('/postgres-admin/tables', [App\Http\Controllers\PostgresAdminController::class, 'getTables'])->name('postgres-admin.tables');
+    Route::post('/postgres-admin/table-structure', [App\Http\Controllers\PostgresAdminController::class, 'getTableStructure'])->name('postgres-admin.table-structure');
 });
 
 
