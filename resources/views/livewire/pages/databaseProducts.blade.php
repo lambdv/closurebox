@@ -13,6 +13,7 @@ use App\Services\MockEC2Service;
 use App\Services\PGDBManagerService;
 use App\Jobs\CreatePGDBRole;
 use App\Jobs\NewPGDBProduct;
+use App\Jobs\DeletePGDBProduct;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -87,7 +88,15 @@ class extends Component {
             ]);
     }       
 
-    
+    public function deleteDatabase(string $product_id){
+        $product = PGDBProduct::where('id', $product_id)->first();
+        $role = PGDBRole::where('pgdb_product_id', $product->id)->first();
+
+        dispatch(new DeletePGDBProduct(
+            pgdb_product: $product,
+            pgdb_role:$role,
+        ));
+    }
 };?>
 
 <div>
@@ -136,7 +145,7 @@ class extends Component {
         <div class="space-y-4">
           
          
-            <flux:input wire:model.defer="databaseName" wire:blur="suggestDatabaseName" label="Database Name" placeholder="Database name (no spaces)" required />
+            <flux:input wire:model.defer="databaseName" label="Database Name" placeholder="Database name (no spaces)" required />
             <p class="text-xs text-gray-500">Use only letters, numbers, underscores, and hyphens. No spaces allowed.</p>
            
           
@@ -160,9 +169,11 @@ class extends Component {
                 ->where('type', 'pgdb')
                 ->get() 
             as $request)
+
                 <div class="border rounded-lg p-4 mb-4">
                     <h2 class="text-lg font-semibold mb-2">Request: {{ $request->id }}</h2>
                     <p class="text-sm text-gray-600">Status: {{ ucfirst($request->status) }}</p>
+
                 </div>
             @endforeach
         </div>
@@ -171,13 +182,19 @@ class extends Component {
         <div>
             @if(count($databases) > 0)
                 @foreach($databases as $db)
-                <a href="{{ route('databaseProducts.show', $db->instance_id) }}">
-                    <div class="border rounded-lg p-4 mb-4">
-                        <h2 class="text-lg font-semibold mb-2">Database: {{ $db->name }}</h2>
-                        <p class="text-sm text-gray-600">Instance ID: {{ $db->instance_id }}</p>
-                        <p class="text-sm text-gray-600">Status: {{ ucfirst($db->status) }}</p>
-                    </div>
-                </a>
+                <div>
+                    <a href="{{ route('databaseProducts.show', $db->instance_id) }}">
+                        <div class="border rounded-lg p-4 mb-4">
+                            <h2 class="text-lg font-semibold mb-2">Database: {{ $db->name }}</h2>
+                            <p class="text-sm text-gray-600">Instance ID: {{ $db->instance_id }}</p>
+                            <p class="text-sm text-gray-600">Status: {{ ucfirst($db->status) }}</p>
+                            
+                            
+                        </div>
+                    </a>
+                    <flux:button wire:click="deleteDatabase({{ $db->id }})" variant="danger" size="xs">Delete</flux:button>
+                </div>
+
                 @endforeach
             @else
                 <p class="text-gray-500">No database roles found.</p>

@@ -6,7 +6,8 @@ use Livewire\Volt\Volt;
 use Illuminate\Support\Str;
 use App\Models\Organization;
 use Inertia\Inertia;
-
+use Illuminate\Http\Request;
+use App\Services\PGDBManagerService;
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
@@ -20,7 +21,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('/databases/{instance_id}', 'pages.databaseProductDetails')
         ->name('databaseProducts.show');
     //Volt::route('/keys', 'pages.databaseKeys')->name('databaseKeys');
+    
+    // // PostgreSQL Admin routes
+    Route::get('/postgres-admin', [App\Http\Controllers\PostgresAdminController::class, 'index'])->name('postgres-admin.index');
+    Route::get('/postgres-admin/test-env', [App\Http\Controllers\PostgresAdminController::class, 'testEnvironment'])->name('postgres-admin.test-env');
+    Route::post('/postgres-admin/connect', [App\Http\Controllers\PostgresAdminController::class, 'connect'])->name('postgres-admin.connect');
+    Route::post('/postgres-admin/execute-query', [App\Http\Controllers\PostgresAdminController::class, 'executeQuery'])->name('postgres-admin.execute-query');
+    Route::post('/postgres-admin/tables', [App\Http\Controllers\PostgresAdminController::class, 'getTables'])->name('postgres-admin.tables');
+    Route::post('/postgres-admin/table-structure', [App\Http\Controllers\PostgresAdminController::class, 'getTableStructure'])->name('postgres-admin.table-structure');    
 });
+
+
 
 
 Route::middleware(['auth'])->group(function () {
@@ -35,5 +46,31 @@ Route::middleware(['auth'])->group(function () {
 Volt::route('/admin', 'pages.admin') //ONLY FOR TESTING
     ->middleware(['auth', 'verified'])
     ->name('admin');
+
+
+
+Route::get('/admin/dbs', function (Request $request) {
+    $pg_manager = new PGDBManagerService();
+    $dbs = $pg_manager->getAllDatabases();
+    dd($dbs);
+});
+
+Route::get('/admin/roles', function (Request $request) {
+    $pg_manager = new PGDBManagerService();
+    $roles = $pg_manager->getUsers();
+    dd($roles);
+});
+
+
+// Route::get('/subscription-checkout', function (Request $request) {
+//     return $request->user()
+//         ->newSubscription('default', 'price_basic_monthly')
+//         ->trialDays(5)
+//         ->allowPromotionCodes()
+//         ->checkout([
+//             'success_url' => route('your-success-route'),
+//             'cancel_url' => route('your-cancel-route'),
+//         ]);
+// });
 
 require __DIR__.'/auth.php';

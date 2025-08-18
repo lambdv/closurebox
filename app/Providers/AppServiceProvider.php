@@ -7,6 +7,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Cashier\Cashier;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         // });
         //Model::preventLazyLoading();
         Cashier::calculateTaxes();
+        Cashier::useCustomerModel(User::class);
     }
 }
