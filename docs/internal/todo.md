@@ -1,19 +1,17 @@
-1. database as a service
-    - /databases page
-        - create database model
-        - crud
-    - /databases/id page
-        - details
-        - tables
-        - settings tab
 
+- database features
+    - rate limiting
+    - details page
+    - settings tab
+        - delete database
 
-2. stripe intergration
+- stripe intergration
     - create account with email verification link (mail) + oauth
     - link with stripe account
     - billing/payment system
     - invoice system
-    
-3. polish
-
-4. ship
+- ui polish
+    - react ui for landing, pricing, account, databases, dashboard, database indivudal
+- ship
+    - host
+    - domain name

@@ -101,8 +101,10 @@ class PGDBManagerService
                 return;
             }
             
+            // Quote identifier to preserve case-sensitive role names
+            $quotedUsername = $this->quoteIdentifier($username);
             $this->connection->select("
-                DROP ROLE $username
+                DROP ROLE $quotedUsername
             ");
         }
         catch(Exception $e){
@@ -111,20 +113,22 @@ class PGDBManagerService
         }
     }
 
+    /**
+     * deletes a database and the role that owns it
+     * @param string $databaseName
+     * @return void
+     */
     public function deleteDatabase(string $databaseName){
         try{
             // Check if database exists before trying to delete it
             $dbExists = $this->connection->select("SELECT 1 FROM pg_database WHERE datname = ?", [$databaseName]);
-            
             if (empty($dbExists)) {
                 Log::info("Database {$databaseName} does not exist, skipping deletion");
                 return;
             }
-            
-            // Use proper quoting for database names that might contain special characters
             $quotedDbName = $this->quoteIdentifier($databaseName);
             $this->connection->select("DROP DATABASE $quotedDbName");
-        }
+        }   
         catch(Exception $e){
             Log::error("Error deleting database: " . $e->getMessage());
             throw $e;
@@ -150,9 +154,6 @@ class PGDBManagerService
         $databases = $this->connection->select("SELECT * FROM pg_database");
         return $databases;
     }
-
-    public function getDatabasesForUser() {}
-
 
     public function doesDatabaseExists(string $databaseName): bool {
         $databaseExists = $this->connection->select("SELECT 1 FROM pg_database WHERE datname = ?", [$databaseName]);

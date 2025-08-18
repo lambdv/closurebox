@@ -1,12 +1,17 @@
 # ClosureBox
 a cloud service platform for serverless databases.
 
-## Install
+## Install and set up
 ```bash
 composer install
 npm run build # or dev
 php artisan migrate:fresh --seed # for testing envorinemnt
 php artisan serve
+
+#stripe
+stripe login
+stripe listen --forward-to http://closurebox.test/stripe/webhook
+php artisan cashier:webhook
 ```
 
 ## Project Layout
@@ -22,3 +27,4 @@ php artisan serve
 /servers/PGDBServer # docker image to run the postgres database server/cluster
 /docs # for user manual and project documentation
 ```
+
