@@ -8,12 +8,13 @@ use App\Models\Organization;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Services\PGDBManagerService;
+
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'paying'])->group(function () {
     Volt::route('/dashboard', 'pages.dashboard')->name('dashboard');
 
     Volt::route('/databases', 'pages.databaseProducts')
@@ -21,7 +22,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('/databases/{instance_id}', 'pages.databaseProductDetails')
         ->name('databaseProducts.show');
     //Volt::route('/keys', 'pages.databaseKeys')->name('databaseKeys');
-    
+
+    Volt::route('/stripe', 'pages.stripeView')->name('stripe'); 
+
     // // PostgreSQL Admin routes
     Route::get('/postgres-admin', [App\Http\Controllers\PostgresAdminController::class, 'index'])->name('postgres-admin.index');
     Route::get('/postgres-admin/test-env', [App\Http\Controllers\PostgresAdminController::class, 'testEnvironment'])->name('postgres-admin.test-env');
@@ -30,8 +33,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/postgres-admin/tables', [App\Http\Controllers\PostgresAdminController::class, 'getTables'])->name('postgres-admin.tables');
     Route::post('/postgres-admin/table-structure', [App\Http\Controllers\PostgresAdminController::class, 'getTableStructure'])->name('postgres-admin.table-structure');    
 });
-
-
 
 
 Route::middleware(['auth'])->group(function () {
@@ -62,15 +63,15 @@ Route::get('/admin/roles', function (Request $request) {
 });
 
 
-// Route::get('/subscription-checkout', function (Request $request) {
-//     return $request->user()
-//         ->newSubscription('default', 'price_basic_monthly')
-//         ->trialDays(5)
-//         ->allowPromotionCodes()
-//         ->checkout([
-//             'success_url' => route('your-success-route'),
-//             'cancel_url' => route('your-cancel-route'),
-//         ]);
-// });
+Route::get('/subscription-checkout', function (Request $request) {
+    return $request->user()
+        ->newSubscription(env('STRIPE_SUBSCRIPTION_PRODUCT_ID'), env('STRIPE_SUBSCRIPTION_PRO_PRICING'))
+        ->trialDays(7)
+        ->allowPromotionCodes()
+        ->checkout([
+            'success_url' => route('home'),
+            'cancel_url' => route('home'),
+        ]);
+})->middleware('auth')->name('stripe.checkout');
 
 require __DIR__.'/auth.php';

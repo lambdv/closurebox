@@ -9,7 +9,7 @@ php artisan migrate:fresh --seed # for testing envorinemnt
 php artisan serve
 
 #stripe
-stripe login
+stripe login #if first time
 stripe listen --forward-to http://closurebox.test/stripe/webhook
 php artisan cashier:webhook
 ```

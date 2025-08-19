@@ -102,15 +102,8 @@ class EC2Service  {
 
     public function describeInstance(string $instanceId){
         try {
-            $result = $this->describeInstances([$instanceId]);
-        
-            // Parse the result
-            foreach ($result['Reservations'] as $reservation) {
-                foreach ($reservation['Instances'] as $instance) {
-                    return $instance;
-                }
-            }
-        
+            $result = $this->describeInstances()['Reservations'][0]['Instances'][0];
+            return $result;
         } catch (AwsException $e) {
             echo "Error: " . $e->getAwsErrorMessage() . PHP_EOL;
         }
