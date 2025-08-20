@@ -12,6 +12,10 @@ php artisan serve
 stripe login #if first time
 stripe listen --forward-to http://closurebox.test/stripe/webhook
 php artisan cashier:webhook
+
+
+# processes
+php artisan queue:work
 ```
 
 ## Project Layout

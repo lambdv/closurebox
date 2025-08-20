@@ -1,25 +1,28 @@
-- create account with email verification link (mail) + oauth
-- link with stripe account
-- billing/payment system
-    - invoice system
+
+- multi stage verification
+    - choose plan (ui + stripe gate)
+    - verifiy identity: email verification
+    - github oauth (still tied to email)
+
+
+- invoice/mettering
+    - track compute and storage usage
+    - billing system (service/job classes to map usage to cost)
+    - invoice ui for users
     
-- use subscription + mettering for base price per moth + useage
-- use invoice api for useage based billing
+    - money cron job to email
+    - test it works iwth stripe
 
-
+- ui 
+    - plan page
+    - settings page
+    - dashboard page
+    - databases page
 
 - ship
     - host
     - domain name
     cv
-
-- react ui
-    - landing, 
-    pricing, 
-    account, 
-    databases, 
-    dashboard, 
-    database indivudal
 
 
 - database features
