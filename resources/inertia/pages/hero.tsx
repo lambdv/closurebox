@@ -54,25 +54,24 @@ export default function Home() {
 
   return (
     <div className={style.wrapper}>
-        <link rel="stylesheet" href="./global.css" />
       <nav className={style.topnav}>
         <div className={style.topnavLeft}>
           <h1 className="font-bold text-xl">ClosureBox</h1>
         </div>
         
         <div className={style.topnavCenter +" space-x-2"} >
-          <Link href="#product-section"><Button variant="ghost">Products</Button></Link>
-          <Link href=""><Button variant="ghost">Pricing</Button></Link>
-          <Link href=""><Button variant="ghost">Contact</Button></Link>
+          <a href="#product-section"><Button variant="ghost">Products</Button></a>
+          <a href=""><Button variant="ghost">Pricing</Button></a>
+          <a href=""><Button variant="ghost">Contact</Button></a>
         </div>
 
         <div className={style.topnavRight + " space-x-2"}>
-          <Link href="/signup">
-            <Button>Sign up</Button>
-          </Link>
-          <Link href="/login">
+          <a href="/register">
+            <Button variant="default">Register</Button>
+          </a>
+          <a href="/login">
             <Button>Login</Button>
-          </Link>
+          </a>
         </div>
       </nav>
 
@@ -96,12 +95,12 @@ export default function Home() {
                 
                 <span className="mb-6"></span>
                 <div className="flex flex-wrap flex-1 gap-2 text-center m-auto">
-                  <Link href="">
+                  <a href="">
                     <Button>Get Started</Button>
-                  </Link>
-                  <Link href="">
+                  </a>
+                  <a href="">
                     <Button variant="ghost">Pricing</Button>
-                  </Link>
+                  </a>
                 </div>
             </div>
               

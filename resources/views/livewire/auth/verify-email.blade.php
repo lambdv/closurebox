@@ -14,7 +14,6 @@ new #[Layout('components.layouts.auth')] class extends Component {
     {
         if (Auth::user()->hasVerifiedEmail()) {
             $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
-
             return;
         }
 

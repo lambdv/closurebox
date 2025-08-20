@@ -9,6 +9,8 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Services\PGDBManagerService;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
 
 
 
@@ -93,7 +95,54 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 
+ 
+;
 
+
+
+ 
+// Route::get('/github/callback', function () {
+    
+//     $githubUser  = Socialite::driver('github')->user();
+
+//     // Derive safe fallbacks for missing GitHub fields
+//     $derivedName = $githubUser->name
+//         ?: ($githubUser->nickname ?? null)
+//         ?: (isset($githubUser->email) ? Str::before($githubUser->email, '@') : null)
+//         ?: 'GitHub User';
+
+//     // Ensure we always have an email (GitHub users can hide email)
+//     $derivedEmail = $githubUser->email ?: ($githubUser->user['email'] ?? null);
+//     if (!$derivedEmail) {
+//         $derivedEmail = ($githubUser->nickname ?? 'github_user')."+{$githubUser->id}@users.noreply.github.com";
+//     }
+
+//     // If an account with this email exists, link it to GitHub; otherwise create/update by github_id
+//     $existingByEmail = User::where('email', $derivedEmail)->first();
+//     if ($existingByEmail) {
+//         $existingByEmail->forceFill([
+//             'name' => $existingByEmail->name ?: $derivedName,
+//             // In many schemas these columns may exist; if not, they will be ignored if not fillable
+//             'github_id' => $githubUser->id,
+//             'email_verified_at' => now(),
+//         ])->save();
+//         $user = $existingByEmail;
+//     } else {
+//         $user = User::updateOrCreate([
+//             'github_id' => $githubUser->id,
+//         ], [
+//             'name' => $derivedName,
+//             'email' => $derivedEmail,
+//             // Satisfy non-null password column if present; model will hash automatically via cast
+//             'password' => Str::password(32),
+//             'email_verified_at' => now(),
+//         ]);
+//     }
+ 
+//     Auth::login($user);
+ 
+//     return redirect('/dashboard');
+// });
 
 
 
