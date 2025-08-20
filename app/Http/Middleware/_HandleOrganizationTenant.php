@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
 
-class HandleOrganizationTenant
+class _HandleOrganizationTenant
 {
     public function handle(Request $request, Closure $next): Response
     {

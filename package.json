@@ -6,6 +6,7 @@
         "dev": "vite"
     },
     "dependencies": {
+        "@gsap/react": "^2.1.2",
         "@headlessui/react": "^2.2.0",
         "@inertiajs/react": "^2.0.17",
         "@radix-ui/react-avatar": "^1.1.3",

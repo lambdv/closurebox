@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use App\Services\PGDBManagerService;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('hero');
 })->name('home');
 
 
